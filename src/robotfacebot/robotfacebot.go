@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/dns-gh/freeze"
 	robot "github.com/dns-gh/robohash-client/robohashclient"
 	"github.com/dns-gh/twbot"
 
@@ -56,6 +57,43 @@ func makeLogger(path string) (string, *os.File, error) {
 	return abs, f, err
 }
 
+var (
+	// original quotes from here: https://github.com/e1ven/Robohash/blob/master/robohash/webfront.py
+	quotes = []string{
+		"#But #but #but.. I still #love you!",
+		"#Please don't leave this #tweet.. When no one's #here.. It gets #dark...",
+		"#Script #fatal #error on line #42",
+		"Don't #trust the other #robots. I'm the only #trustworthy one.",
+		"My #fuel is the #misery of children. And #Rum. Mostly #Rum... Well... #Energy also that's true...",
+		"When they said they'd give me a body transplant, I didn't think they meant this!",
+		"Subject 14 has had it's communication subroutines deleted for attempting suicide.",
+		"I am the cleverest robot on the whole page.",
+		"#Oil can. #Can I? I #think I use #Oil. #Oil can. #Can I? I #think I use #Oil...",
+		"I am #fleunt in over 6 #million #forms of #communishin.",
+		"I see a little #silhouette of a #bot..",
+		"I WANT MY #HANDS #BACK!",
+		"#Please don't #reload, I'll #DIE!",
+		"#Robots don't have #souls, you know. But they do #feel #pain.",
+		"I #wonder what would #happen if all the #robots went #rogue.",
+		"10: #KILL ALL #HUMANS. 20: GO 10",
+		"I'm the #best #robot here.",
+		"The #green #robot #thinks you're #cute.",
+		"Any #robot you don't click on, they# dismantle.",
+		"#Robot #tears #taste like #candy.",
+		"01010010010011110100001001001111010101000101001100100001!",
+		"Your #mouse #cursor #tickles.",
+		"#Logic #dictates #placing me on your #tweet.",
+		"I #think my #arm is on #backward.",
+		"I'm #different!",
+		"It was the #best of #times, it was ಠ_ಠ worth #living...",
+		"#String is #Gnirts spelled #backward, you know",
+		"We're no #strangers to #hashing.. You know the 3 rules, and so do I..",
+		"Please. #Destroy. Me... ... well no no no no on second #thought...",
+		"#Pick #Me! #Pick #Me!",
+		"Tzzzzzz shhhh - df d- test... I'm still #configuring #myself as a #machine... - , dfsl sdjbl , please be #gentle.... I'm a #robot --- fdsi !",
+	}
+)
+
 func main() {
 	update := flag.Duration(updateFlag, 6*time.Hour, "[twitter] update frequency of the bot for tweets")
 	twitterFollowersPath := flag.String(twitterFollowersPathFlag, "followers.json", "[twitter] data file path for followers")
@@ -96,9 +134,8 @@ func main() {
 	roboClient := robot.MakeRobohashClient(200, 200, 1, 1)
 	Fetch := func() (string, string, string, error) {
 		timeStr := strconv.FormatInt(time.Now().UnixNano(), 10)
-		msg := fmt.Sprintf("Tzzzzzz shhhh - df d- test... I'm still #configuring #myself as a #machine... - , dfsl sdjbl , please be #gentle.... I'm a #robot --- fdsi !")
 		img, err := roboClient.Fetch(timeStr)
-		return msg, img, "", err
+		return freeze.GetRandomElement(quotes), img, "", err
 	}
 	bot.TweetImagePeriodicallyAsync(Fetch, 30*time.Minute)
 	bot.TweetPeriodicallyAsync(func() (string, error) {
