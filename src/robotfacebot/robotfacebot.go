@@ -5,12 +5,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io"
 	"log"
-	"os"
 	"path/filepath"
 	"time"
 
+	"github.com/dns-gh/betterlog"
 	"github.com/dns-gh/freeze"
 	robot "github.com/dns-gh/robohash-client/robohashclient"
 	"github.com/dns-gh/twbot"
@@ -29,33 +28,6 @@ const (
 	twitterTweetsPathFlag    = "twitter-tweets-path"
 	debugFlag                = "debug"
 )
-
-type timeWriter struct {
-	writer io.Writer
-}
-
-func (w timeWriter) Write(p []byte) (int, error) {
-	date := time.Now().Format("[2006-01-02 15:04:05] ")
-	p = append([]byte(date), p...)
-	return w.writer.Write(p)
-}
-
-func makeDateWriter(w io.Writer) io.Writer {
-	return &timeWriter{w}
-}
-
-func makeLogger(path string) (string, *os.File, error) {
-	abs, err := filepath.Abs(path)
-	if err != nil {
-		return "", nil, err
-	}
-	err = os.MkdirAll(filepath.Dir(abs), os.ModePerm)
-	if err != nil {
-		return "", nil, err
-	}
-	f, err := os.OpenFile(abs, os.O_WRONLY+os.O_APPEND+os.O_CREATE, os.ModePerm)
-	return abs, f, err
-}
 
 var (
 	// original quotes from here: https://github.com/e1ven/Robohash/blob/master/robohash/webfront.py
@@ -105,16 +77,11 @@ func main() {
 	twitterAccessSecret := flag.String("TWITTER_ACCESS_SECRET", "", "[twitter] access secret")
 	debug := flag.Bool(debugFlag, false, "[twitter] debug mode")
 	_, err := conf.NewConfig("robot.config")
-	log.SetFlags(0)
-	logPath, f, err := makeLogger(filepath.Join(filepath.Dir(os.Args[0]), "Debug", "bot.log"))
-	if err == nil {
-		defer f.Close()
-		log.SetOutput(makeDateWriter(io.MultiWriter(f, os.Stderr)))
-	}
+	f, err := betterlog.MakeDateLogger(filepath.Join("Debug", "bot.log"))
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	log.Println("[info] logging to:", logPath)
+	defer f.Close()
 	log.Println("[twitter] update:", *update)
 	log.Println("[twitter] twitter-followers-path:", *twitterFollowersPath)
 	log.Println("[twitter] twitter-friends-path:", *twitterFriendsPath)
