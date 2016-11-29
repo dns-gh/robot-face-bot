@@ -124,7 +124,7 @@ func main() {
 	log.Println("[twitter] twitterAccessToken:", *twitterAccessToken)
 	log.Println("[twitter] twitterAccessSecret:", *twitterAccessSecret)
 	log.Println("[twitter] debug:", *debug)
-	bot := twbot.MakeTwitterBotWithAccess(*twitterFollowersPath, *twitterFriendsPath, *twitterTweetsPath,
+	bot := twbot.MakeTwitterBotWithCredentials(*twitterFollowersPath, *twitterFriendsPath, *twitterTweetsPath,
 		*twitterConsumerKey,
 		*twitterConsumerSecret,
 		*twitterAccessToken,
