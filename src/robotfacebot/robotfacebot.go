@@ -50,7 +50,7 @@ var (
 		"10: #KILL ALL #HUMANS. 20: GO 10",
 		"I'm the #best #robot here.",
 		"The #green #robot #thinks you're #cute.",
-		"Any #robot you don't click on, they# dismantle.",
+		"Any #robot you don't click on, they #dismantle.",
 		"#Robot #tears #taste like #candy.",
 		"01010010010011110100001001001111010101000101001100100001!",
 		"Your #mouse #cursor #tickles.",
