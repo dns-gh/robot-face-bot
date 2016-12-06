@@ -4,6 +4,8 @@
 
 The robot face bot is a Twitter Bot connected to the https://robohash.org/ API able to tweet robot messages with hashed computed robot faces.
 
+See https://twitter.com/RoboFaceBot for an instance of it.
+
 It uses the following client to talk to the robohash API: https://github.com/dns-gh/robohash-client
 
 It has also a specified and user-defined bot behaviors thanks to https://github.com/dns-gh/twbot.
